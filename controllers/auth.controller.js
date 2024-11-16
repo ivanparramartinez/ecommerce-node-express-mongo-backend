@@ -1,5 +1,6 @@
 import { User } from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { generateToken } from "../utils/tokenManager.js";
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
@@ -34,10 +35,29 @@ export const login = async (req, res) => {
     if (!match) return res.status(401).json({ error: "Contraseña incorrecta" });
 
     // JWT
-    const token = jwt.sign({ uid: user._id }, process.env.JWT_SECRET);
+    const { token, expiresIn } = generateToken(user._id);
 
-    return res.json({ token });
+    // Token en cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return res.json({ token, expiresIn });
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const infoUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.uid).lean();
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+    return res.json({ email: user.email });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Error al obtener la información del usuario" });
   }
 };

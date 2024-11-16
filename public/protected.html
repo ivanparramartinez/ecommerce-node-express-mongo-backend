@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Protected Page</title>
+  </head>
+  <body>
+    <h1>Welcome to the Protected Page</h1>
+    <h2 id="email">Email:</h2>
+  </body>
+</html>
+<script>
+  document.addEventListener("DOMContentLoaded", async (e) => {
+    try {
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NzM2MzdkYTRjZDU2MjJkZTNjMjhhMDUiLCJpYXQiOjE3MzE3MjUwMTYsImV4cCI6MTczMTcyNTkxNn0.X1lA2QiKvsyT4-ifsS3zK3_ao23j3ULBFFJtUQcekDw";
+      const response = await fetch("/api/v1/auth/protected", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+      const data = await response.json();
+      console.log(data);
+      document.querySelector("#email").textContent = `Email: ${data.email}`;
+    } catch (error) {
+      console.log(error);
+    }
+  });
+</script>
