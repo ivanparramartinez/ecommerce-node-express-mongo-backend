@@ -1,6 +1,6 @@
 import { User } from "../models/User.js";
 import jwt from "jsonwebtoken";
-import { generateToken } from "../utils/tokenManager.js";
+import { generateRefreshToken, generateToken } from "../utils/tokenManager.js";
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
@@ -36,12 +36,14 @@ export const login = async (req, res) => {
 
     // JWT
     const { token, expiresIn } = generateToken(user._id);
+    console.log(token);
+    generateRefreshToken(user._id, res);
 
-    // Token en cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-    });
+    // Token en cookie (es más seguro que localStorage)
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    // });
 
     return res.json({ token, expiresIn });
   } catch (error) {
@@ -59,5 +61,33 @@ export const infoUser = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Error al obtener la información del usuario" });
+  }
+};
+
+export const refreshToken = async (req, res) => {
+  try {
+    const refToken = req.cookies.refreshToken;
+    if (!refToken) throw new Error("No se ha proporcionado un token de refresh válido");
+
+    const { uid } = jwt.verify(refToken, process.env.JWT_REFRESH);
+
+    const { token, expiresIn } = generateToken(uid);
+
+    return res.json({ token, expiresIn });
+  } catch (error) {
+    console.log(error);
+    const TokenVerificationErrors = {
+      "invalid signature": "La firma del token no es válida",
+      "jwt expired": "El token ha expirado",
+      "invalid token": "El token no es válido",
+      "No Bearer": "El token no tiene el formato correcto",
+      "Token no contiene uid":
+        "El token no contiene la información de usuario necesaria",
+      "jwt malformed": "El token no tiene el formato correcto",
+    };
+
+    return res.status(401).json({
+      error: TokenVerificationErrors[error.message] || "Error de autenticación",
+    });
   }
 };
