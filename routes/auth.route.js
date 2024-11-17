@@ -2,12 +2,14 @@ import { Router } from "express";
 import {
   infoUser,
   login,
+  logout,
   refreshToken,
   register,
 } from "../controllers/auth.controller.js";
 import { body } from "express-validator";
 import { validationResultExpress } from "../middlewares/validationResultExpress.js";
 import { requireAuth } from "../middlewares/requireAuth.js";
+import { requireRefreshToken } from "../middlewares/requireRefreshToken.js";
 const router = Router();
 
 router.post(
@@ -46,5 +48,7 @@ router.post(
 );
 
 router.get("/protected", requireAuth, infoUser);
-router.get("/refresh", refreshToken);
+router.get("/refresh", requireRefreshToken, refreshToken);
+router.get("/logout", logout);
+
 export default router;

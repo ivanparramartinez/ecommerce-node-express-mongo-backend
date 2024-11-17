@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { tokenVerificationErrors } from "../utils/tokenManager.js";
 
 export const requireAuth = (req, res, next) => {
   // this works with headers
@@ -19,18 +20,8 @@ export const requireAuth = (req, res, next) => {
     req.uid = decoded.uid;
     next();
   } catch (error) {
-    const TokenVerificationErrors = {
-      "invalid signature": "La firma del token no es válida",
-      "jwt expired": "El token ha expirado",
-      "invalid token": "El token no es válido",
-      "No Bearer": "El token no tiene el formato correcto",
-      "Token no contiene uid":
-        "El token no contiene la información de usuario necesaria",
-      "jwt malformed": "El token no tiene el formato correcto",
-    };
-
     const errorMessage =
-      TokenVerificationErrors[error.message] || "Error de autenticación";
+      tokenVerificationErrors[error.message] || "Error de autenticación";
 
     return res.status(401).json({ error: errorMessage });
   }
@@ -55,18 +46,8 @@ export const requireAuthWithCookies = (req, res, next) => {
     req.uid = decoded.uid;
     next();
   } catch (error) {
-    const TokenVerificationErrors = {
-      "invalid signature": "La firma del token no es válida",
-      "jwt expired": "El token ha expirado",
-      "invalid token": "El token no es válido",
-      "No Bearer": "El token no tiene el formato correcto",
-      "Token no contiene uid":
-        "El token no contiene la información de usuario necesaria",
-      "jwt malformed": "El token no tiene el formato correcto",
-    };
-
     const errorMessage =
-      TokenVerificationErrors[error.message] || "Error de autenticación";
+      tokenVerificationErrors[error.message] || "Error de autenticación";
 
     return res.status(401).json({ error: errorMessage });
   }

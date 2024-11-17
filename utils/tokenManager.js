@@ -30,3 +30,13 @@ export const generateRefreshToken = (uid, res) => {
     console.log(error);
   }
 };
+
+export const tokenVerificationErrors = {
+  "invalid signature": "La firma del token no es válida",
+  "jwt expired": "El token ha expirado",
+  "invalid token": "El token no es válido",
+  "No Bearer": "El token no tiene el formato correcto",
+  "Token no contiene uid":
+    "El token no contiene la información de usuario necesaria",
+  "jwt malformed": "El token no tiene el formato correcto",
+};
