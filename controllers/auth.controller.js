@@ -36,7 +36,7 @@ export const login = async (req, res) => {
 
     // JWT
     const { token, expiresIn } = generateToken(user._id);
-    console.log(token);
+
     generateRefreshToken(user._id, res);
 
     // Token en cookie (es más seguro que localStorage)
@@ -67,7 +67,8 @@ export const infoUser = async (req, res) => {
 export const refreshToken = async (req, res) => {
   try {
     const refToken = req.cookies.refreshToken;
-    if (!refToken) throw new Error("No se ha proporcionado un token de refresh válido");
+    if (!refToken)
+      throw new Error("No se ha proporcionado un token de refresh válido");
 
     const { uid } = jwt.verify(refToken, process.env.JWT_REFRESH);
 

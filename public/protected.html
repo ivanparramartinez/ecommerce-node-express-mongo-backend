@@ -32,9 +32,9 @@
         //   "Content-Type": "application/json",
         // },
       });
-      console.log(response);
+      
       const data = await response.json();
-      console.log(data);
+      
       document.querySelector("#email").textContent = `Email: ${data.email}`;
     } catch (error) {
       console.log(error);
