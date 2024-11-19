@@ -17,6 +17,8 @@ export const register = async (req, res) => {
     await user.save();
 
     // JWT
+    const { token, expiresIn } = generateToken(user._id);
+    generateRefreshToken(user._id, res);
 
     return res.status(201).json({ ok: "Usuario registrado correctamente" });
   } catch (error) {
@@ -40,7 +42,6 @@ export const login = async (req, res) => {
 
     // JWT
     const { token, expiresIn } = generateToken(user._id);
-
     generateRefreshToken(user._id, res);
 
     // Token en cookie (es más seguro que localStorage)
