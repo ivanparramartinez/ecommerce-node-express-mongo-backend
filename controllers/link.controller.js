@@ -61,5 +61,33 @@ export const deleteLink = async (req, res) => {
     return res.json({ message: "Enlace eliminado", link });
   } catch (error) {
     console.log(error);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ error: "Formato de id incorrecto" });
+    }
+    return res.status(500).json({ error: "Error de servidor" });
+  }
+};
+
+export const updateLink = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { longLink } = req.body;
+    const link = await Link.findById(id);
+    if (!link) return res.status(404).json({ error: "Enlace no encontrado" });
+
+    if (link.uid.toString() !== req.uid) {
+      return res.status(401).json({ error: "No autorizado" });
+    }
+
+    link.longLink = longLink;
+    await link.updateOne({ longLink });
+
+    return res.json({ message: "Enlace actualizado", link });
+  } catch (error) {
+    console.log(error);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ error: "Formato de id incorrecto" });
+    }
+    return res.status(500).json({ error: "Error de servidor" });
   }
 };
