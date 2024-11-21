@@ -18,7 +18,7 @@ const router = Router();
 router.get("/", requireAuth, getLinks);
 
 // GET /api/v1/links/:id - Get link by id
-router.get("/:id", requireAuth, getLink);
+router.get("/:nanoLink", getLink);
 
 // POST /api/v1/links - Create a new link
 router.post("/", requireAuth, bodyLinkValidator, createLink);

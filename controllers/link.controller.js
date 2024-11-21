@@ -13,6 +13,24 @@ export const getLinks = async (req, res) => {
 
 export const getLink = async (req, res) => {
   try {
+    const { nanoLink } = req.params;
+    const link = await Link.findOne({ nanoLink });
+
+    if (!link) return res.status(404).json({ error: "No existe el link" });
+
+    return res.json({ longLink: link.longLink });
+  } catch (error) {
+    console.log(error);
+    if (error.kind === "ObjectId") {
+      return res.status(403).json({ error: "Formato id incorrecto" });
+    }
+    return res.status(500).json({ error: "Error de servidor" });
+  }
+};
+
+// Get Link for a traditional CRUD
+export const getLinkV1 = async (req, res) => {
+  try {
     const { id } = req.params;
     const link = await Link.findById(id);
     if (!link) return res.status(404).json({ error: "Enlace no encontrado" });
