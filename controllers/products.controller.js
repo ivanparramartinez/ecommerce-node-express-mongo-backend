@@ -84,6 +84,12 @@ export const updateBulkProducts = async (req, res) => {
 
     const products = Array.from(productMap.values());
 
+    const deleteProductsNotInFile = await Product.deleteMany({
+      reference: { $nin: products.map((product) => product.reference) },
+    });
+
+    console.log("deleteProductsNotInFile:", deleteProductsNotInFile);
+
     const bulkOperations = products.map((product) => {
       return {
         updateOne: {
