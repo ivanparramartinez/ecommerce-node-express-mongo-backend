@@ -12,15 +12,35 @@ export const getProducts = async (req, res) => {
 
 export const createBulkProducts = async (req, res) => {
   try {
-    console.log(req.uid);
-    const products = req.csvData.map((product) => {
-      return {
-        name: product.name,
-        price: product.price,
-        stock: product.stock,
-        uid: req.uid,
+    const productMap = new Map();
+
+    req.csvData.forEach((product) => {
+      const images = product.images.split("|"); // Split the images string into an array
+      const variation = {
+        color: product.color,
+        size: product.size,
+        stock: parseInt(product.stock, 10), // Convert stock to number
       };
+
+      if (productMap.has(product.reference)) {
+        productMap.get(product.reference).variations.push(variation);
+      } else {
+        productMap.set(product.reference, {
+          reference: product.reference,
+          name: product.name,
+          price: parseFloat(product.price), // Convert price to number
+          variations: [variation],
+          description: product.description,
+          rating: parseFloat(product.rating), // Convert rating to number
+          images: images,
+          category: product.category, // Include category
+          brand: product.brand, // Include brand
+          uid: req.uid,
+        });
+      }
     });
+
+    const products = Array.from(productMap.values());
 
     const newProducts = await Product.insertMany(products);
     return res
