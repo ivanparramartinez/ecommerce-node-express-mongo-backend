@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getProducts,
   createBulkProducts,
+  updateBulkProducts,
 } from "../controllers/products.controller.js";
 import { readAndParseXlsx } from "../middlewares/readAndParseCsv.js";
 import { requireAuth } from "../middlewares/requireAuth.js";
@@ -23,11 +24,18 @@ const router = Router();
 
 router.get("/", getProducts);
 router.post(
-  "/bulkProducts",
+  "/createBulkProducts",
   requireAuth,
   upload.single("file"),
   readAndParseXlsx,
   createBulkProducts
+);
+router.post(
+  "/updateBulkProducts",
+  requireAuth,
+  upload.single("file"),
+  readAndParseXlsx,
+  updateBulkProducts
 );
 
 export default router;

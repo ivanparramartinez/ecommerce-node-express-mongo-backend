@@ -32,7 +32,7 @@ export const readAndParseCsv = async (req, res, next) => {
         .json({ error: "No se ha subido un archivo válido" });
     }
 
-    req.csvData = await parseCsv(buffer);
+    req.data = await parseCsv(buffer);
     next();
   } catch (error) {
     console.error("Error procesando CSV:", error);
@@ -60,7 +60,7 @@ export const readAndParseXlsx = async (req, res, next) => {
         .json({ error: "No se ha subido un archivo válido" });
     }
 
-    req.csvData = await parseXlsx(buffer);
+    req.data = await parseXlsx(buffer);
     next();
   } catch (error) {
     console.error("Error procesando XLSX:", error);
