@@ -7,13 +7,13 @@ import {
 } from "../utils/tokenManager.js";
 
 export const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { firstName, lastName, email, password, role } = req.body;
 
   try {
     let user = await User.findOne({ email });
     if (user) throw { code: 11000 };
 
-    user = new User({ email, password });
+    user = new User({ firstName, lastName, email, password, role });
     await user.save();
 
     // JWT
