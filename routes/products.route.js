@@ -1,8 +1,7 @@
 import { Router } from "express";
 import {
   getProducts,
-  createBulkProducts,
-  updateBulkProducts,
+  upsertBulkProducts, // Cambiar el nombre de la función importada
   deleteProductById,
   getProductById,
 } from "../controllers/products.controller.js";
@@ -26,18 +25,11 @@ const router = Router();
 
 router.get("/", getProducts);
 router.post(
-  "/createBulkProducts",
+  "/upsertBulkProducts", // Cambiar el nombre de la ruta
   requireAuth,
   upload.single("file"),
   readAndParseXlsx,
-  createBulkProducts
-);
-router.post(
-  "/updateBulkProducts",
-  requireAuth,
-  upload.single("file"),
-  readAndParseXlsx,
-  updateBulkProducts
+  upsertBulkProducts
 );
 router.delete("/:id", requireAuth, deleteProductById);
 
