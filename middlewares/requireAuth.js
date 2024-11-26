@@ -2,8 +2,7 @@ import jwt from "jsonwebtoken";
 import { tokenVerificationErrors } from "../utils/tokenManager.js";
 
 export const requireAuth = (req, res, next) => {
-  // this works with headers
-
+  console.log("require auth");
   try {
     let token = req.headers?.authorization;
 

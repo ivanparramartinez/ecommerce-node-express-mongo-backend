@@ -3,6 +3,8 @@ import {
   getProducts,
   createBulkProducts,
   updateBulkProducts,
+  deleteProductById,
+  getProductById,
 } from "../controllers/products.controller.js";
 import { readAndParseXlsx } from "../middlewares/readAndParseCsv.js";
 import { requireAuth } from "../middlewares/requireAuth.js";
@@ -37,5 +39,6 @@ router.post(
   readAndParseXlsx,
   updateBulkProducts
 );
+router.delete("/:id", requireAuth, deleteProductById);
 
 export default router;
